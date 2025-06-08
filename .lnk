@@ -1,0 +1,17 @@
+.config/alacritty
+.config/cava
+.config/chromium-flags.conf
+.config/fastfetch
+.config/fcitx5
+.config/fontconfig
+.config/git
+.config/niriswitcher
+.config/npm
+.config/paru
+.config/spicetify
+.config/spotify-flags.conf
+.config/starship.toml
+.config/zed
+.config/zsh
+.nanorc
+.profile

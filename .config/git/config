@@ -1,0 +1,26 @@
+[alias]
+	unstage = reset HEAD --
+	uncommit = reset HEAD~
+	untrack = update-index --assume-unchanged
+	retrack = update-index --no-assume-unchanged
+	discard = reset --hard
+	revert = reset --hard HEAD~1
+	set-remote = remote set-url origin
+[credential "https://github.com"]
+	helper =
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !/usr/bin/gh auth git-credential
+[push]
+	autoSetupRemote = true
+[core]
+	hooksPath = .githooks
+[init]
+	defaultBranch = main
+[pager]
+	branch = false
+	diff = false
+[user]
+	email = hankthedev@gmail.com
+	name = hengtseChou
