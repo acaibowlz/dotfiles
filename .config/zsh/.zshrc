@@ -183,7 +183,7 @@ change-wallpaper() {
 
   _change-wallpaper() {
     if [[ $XDG_CURRENT_DESKTOP == "niri" ]]; then
-      bash "$HOME/Niri/scripts/change-wallpaper.sh"
+      bash "$HOME/Code/niri-setup/scripts/change-wallpaper.sh"
 
     elif [[ $XDG_CURRENT_DESKTOP == "GNOME" ]]; then
       local wallpaper_dir="$HOME/Pictures/Wallpapers"
