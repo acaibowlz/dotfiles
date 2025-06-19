@@ -10,7 +10,7 @@
 
 typeset -U PATH path
 path=(
-  "$HOME/Scripts"
+  "$HOME/Code/scripts"
   "$HOME/.local/bin"
   "$XDG_DATA_HOME/npm/bin"
   "$XDG_DATA_HOME/cargo/bin"
