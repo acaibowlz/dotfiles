@@ -8,6 +8,7 @@
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
   // Appearance settings
+  "show_edit_predictions": false,
   "theme": {
     "mode": "system",
     "light": "One Light",
@@ -30,6 +31,7 @@
 
   // Assistant configuration
   "agent": {
+    "default_profile": "ask",
     "default_model": {
       "provider": "copilot_chat",
       "model": "gpt-4o"
@@ -62,8 +64,12 @@
       "formatter": [
         {
           "code_actions": {
-            "source.fixAll.ruff": true,
-            "source.organizeImports.ruff": true
+            "source.fixAll.ruff": true
+          }
+        },
+        {
+          "language_server": {
+            "name": "ruff"
           }
         }
       ]
@@ -96,9 +102,9 @@
       "initialization_options": {
         "settings": {
           "exclude": [".venv"],
-          "lineLength": 100,
+          "lineLength": 120,
           "lint": {
-            "select": ["I"],
+            "select": ["E", "F", "I"],
             "ignore": ["E501"]
           }
         }
