@@ -8,7 +8,6 @@
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
   // Appearance settings
-  "show_edit_predictions": false,
   "theme": {
     "mode": "system",
     "light": "One Light",
@@ -20,23 +19,43 @@
   "ui_font_family": "JetBrainsMono Nerd Font Mono",
   "ui_font_size": 16,
 
-  // Features and behavior
-  "features": {
-    "edit_prediction_provider": "zed"
-  },
+  // IDE settings
   "hover_popover_delay": 50,
   "collaboration_panel": {
     "button": false
   },
+  "debugger": {
+    "button": false
+  },
+  "notification_panel": {
+    "button": false
+  },
+  "terminal": {
+    "default_height": 500,
+    "button": false
+  },
+  "toolbar": {
+    "quick_actions": false
+  },
+  "outline_panel": {
+    "button": false
+  },
+  "minimap": {
+    "show": "always"
+  },
 
-  // Assistant configuration
+  // AI features
+  "disable_ai": false,
+  "features": {
+    "edit_prediction_provider": "zed"
+  },
+  "show_edit_predictions": false,
   "agent": {
     "default_profile": "ask",
     "default_model": {
       "provider": "copilot_chat",
       "model": "gpt-4o"
-    },
-    "version": "2"
+    }
   },
 
   // Language-specific settings
@@ -104,18 +123,11 @@
           "exclude": [".venv"],
           "lineLength": 120,
           "lint": {
-            "select": ["E", "F", "I"],
+            "select": ["E", "F"],
             "ignore": ["E501"]
           }
         }
       }
     }
-  },
-
-  // Terminal settings
-  "terminal": {
-    "default_height": 500
   }
-
-  // Formatter settings
 }
