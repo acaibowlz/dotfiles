@@ -123,8 +123,8 @@
           "exclude": [".venv"],
           "lineLength": 120,
           "lint": {
-            "select": ["E", "F"],
-            "ignore": ["E501"]
+            "select": ["E", "F", "I", "N"],
+            "ignore": ["E501", "F401", "N818"]
           }
         }
       }
