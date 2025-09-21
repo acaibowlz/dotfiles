@@ -134,6 +134,7 @@ fi
 # ---------------------------------------------------------------------------- #
 
 alias e="exit"
+alias v="source .venv/bin/activate"
 alias ff="fastfetch"
 alias ls="eza --icons --group-directories-first"
 alias ll="eza -l --icons --group-directories-first"
