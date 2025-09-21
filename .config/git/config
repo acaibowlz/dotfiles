@@ -6,6 +6,7 @@
 	discard = reset --hard
 	revert = reset --hard HEAD~1
 	set-remote = remote set-url origin
+	add-remote = remote add origin
 [credential "https://github.com"]
 	helper =
 	helper = !/usr/bin/gh auth git-credential
