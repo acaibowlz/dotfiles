@@ -4,7 +4,6 @@
 	untrack = update-index --assume-unchanged
 	retrack = update-index --no-assume-unchanged
 	discard = reset --hard
-	revert = reset --hard HEAD~1
 	set-remote = remote set-url origin
 	add-remote = remote add origin
 [credential "https://github.com"]
