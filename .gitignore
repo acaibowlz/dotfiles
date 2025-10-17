@@ -2,3 +2,4 @@
 .config/fcitx5/conf/cached_layouts
 .config/cava/shaders/
 .config/cava/themes/
+.config/fontconfig/conf.d/
