@@ -63,10 +63,10 @@
     "JavaScript": {
       "tab_size": 2,
       "format_on_save": "on",
-      "code_actions_on_format": {
-        "source.fixAll.eslint": true,
-        "source.organizeImports.eslint": true
-      }
+      "formatter": [
+        { "code_action": "source.fixAll.eslint" },
+        { "code_action": "source.organizeImports.eslint" }
+      ]
     },
     "JSON": {
       "tab_size": 2,
@@ -81,16 +81,8 @@
       "language_servers": ["pyright", "ruff"],
       "format_on_save": "on",
       "formatter": [
-        {
-          "code_actions": {
-            "source.fixAll.ruff": true
-          }
-        },
-        {
-          "language_server": {
-            "name": "ruff"
-          }
-        }
+        { "code_action": "source.fixAll.ruff" },
+        { "language_server": { "name": "ruff" } }
       ]
     },
     "Shell Script": {
@@ -100,6 +92,9 @@
       "tab_size": 4
     },
     "YAML": {
+      "tab_size": 2
+    },
+    "CSS": {
       "tab_size": 2
     }
   },
@@ -128,6 +123,13 @@
           }
         }
       }
+    }
+  },
+
+  // git settings
+  "git": {
+    "inline_blame": {
+      "show_commit_summary": true
     }
   }
 }

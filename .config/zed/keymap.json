@@ -8,7 +8,9 @@
 [
   {
     "context": "Workspace",
-    "bindings": {}
+    "bindings": {
+      "alt-x": ["task::Spawn", { "task_name": "Create a comment divider" }]
+    }
   },
   {
     "context": "Editor",
