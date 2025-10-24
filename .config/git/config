@@ -3,7 +3,6 @@
 	uncommit = reset HEAD~
 	untrack = update-index --assume-unchanged
 	retrack = update-index --no-assume-unchanged
-	discard = reset --hard
 	set-remote = remote set-url origin
 	add-remote = remote add origin
 [credential "https://github.com"]
