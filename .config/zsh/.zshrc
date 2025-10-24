@@ -117,13 +117,15 @@ zstyle ':fzf-tab:*' use-fzf-default-opts yes
 #                                      GIT                                     #
 # ---------------------------------------------------------------------------- #
 
-alias gs="git status"
 alias ga="git add"
-alias gc="git commit -m"
-alias gp="git push"
 alias gb="git branch"
-alias gsw="git switch"
+alias gc="git commit -m"
 alias gd="git diff"
+alias gf="git fetch -p"
+alias gm="git merge"
+alias gp="git push"
+alias gs="git status"
+alias gsw="git switch"
 alias gcl="git clone"
 if command -v git-extras >/dev/null 2>&1; then
   source /usr/share/doc/git-extras/git-extras-completion.zsh
@@ -243,8 +245,16 @@ alias uninst="paru -Rns"
 alias up="paru -Syu"
 alias speed="speedtest-cli --bytes"
 alias mirrors="rate-mirrors --allow-root --protocol https arch | grep -v '^#' | sudo tee /etc/pacman.d/mirrorlist"
-alias deps-upward="aura deps --open"
-alias deps-downward="aura deps --open --reverse"
+
+deps() {
+  if [[ "$1" == "upward" ]]; then
+    aura deps --open "$2"
+  elif [[ "$1" == "downward" ]]; then
+    aura deps --open --reverse "$2"
+  else
+    echo "Unknown option: $1"
+  fi
+}
 
 pkglist() {
   _is_installed() {
