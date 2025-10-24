@@ -61,12 +61,12 @@
   // Language-specific settings
   "languages": {
     "JavaScript": {
+      "code_actions_on_format": {
+        "source.organizeImports.eslint": true,
+        "source.fixAll.eslint": true
+      },
       "tab_size": 2,
-      "format_on_save": "on",
-      "formatter": [
-        { "code_action": "source.fixAll.eslint" },
-        { "code_action": "source.organizeImports.eslint" }
-      ]
+      "format_on_save": "on"
     },
     "JSON": {
       "tab_size": 2,
