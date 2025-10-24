@@ -1,6 +1,7 @@
 #!/usr/bin/python
+import os
 import sys
 
 text_wrap = f" {sys.argv[1]} "
-length = int(sys.argv[2]) if len(sys.argv) > 2 else 76
-print(f"# {text_wrap:-^{length}} #")
+line_length = int(os.getenv("LINE_LENGTH"))
+print(f"# {text_wrap:-^{line_length - 4}} #")
