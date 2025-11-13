@@ -125,6 +125,7 @@ alias gf="git fetch -p"
 alias gm="git merge"
 alias gp="git push"
 alias gs="git status"
+alias gu="git uncommit"
 alias gsw="git switch"
 alias gcl="git clone"
 if command -v git-extras >/dev/null 2>&1; then
