@@ -62,7 +62,6 @@
   "languages": {
     "JavaScript": {
       "code_actions_on_format": {
-        "source.organizeImports.eslint": true,
         "source.fixAll.eslint": true
       },
       "tab_size": 2,
@@ -96,6 +95,10 @@
     },
     "CSS": {
       "tab_size": 2
+    },
+    "HTML": {
+      "tab_size": 2,
+      "format_on_save": "off"
     }
   },
 
@@ -104,8 +107,9 @@
     "pyright": {
       "settings": {
         "python.analysis": {
-          "diagnosticMode": "workspace",
-          "typeCheckingMode": "off"
+          "diagnosticMode": "openFilesOnly",
+          "typeCheckingMode": "standard",
+          "diagnosticSeverityOverrides": {}
         },
         "python": {
           "pythonPath": ".venv/bin/python"
@@ -121,6 +125,34 @@
             "select": ["E", "F", "I", "N"],
             "ignore": ["E501", "F401", "N818"]
           }
+        }
+      }
+    },
+    "basedpyright": {
+      "settings": {
+        "python": {
+          "pythonPath": ".venv/bin/python"
+        },
+        "basedpyright": {
+          "disableOrganizeImports": false
+        },
+        "basedpyright.analysis": {
+          "typeCheckingMode": "standard",
+          "diagnosticMode": "openFilesOnly",
+          "diagnosticSeverityOverrides": {},
+          "inlayHints": { "callArgumentNames": true }
+        }
+      }
+    },
+    "ty": {
+      "settings": {
+        "diagnosticMode": "workspace"
+      }
+    },
+    "eslint": {
+      "settings": {
+        "codeActionOnSave": {
+          "rules": ["import/order"]
         }
       }
     }
