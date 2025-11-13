@@ -7,13 +7,81 @@
 // from the command palette.
 [
   {
-    "context": "Workspace",
+    "context": "Editor",
     "bindings": {
       "alt-x": ["task::Spawn", { "task_name": "Create a comment divider" }]
     }
   },
   {
     "context": "Editor",
-    "bindings": {}
+    "bindings": {
+      "alt-r": ["task::Spawn", { "task_name": "Ruff check --fix" }]
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "alt-g": ["task::Spawn", { "task_name": "Git add $ZED_FILE" }]
+    }
+  },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "alt-left": "workspace::ToggleLeftDock"
+    }
+  },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "alt-right": "workspace::ToggleRightDock"
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "alt-down": null
+    }
+  },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "alt-down": "workspace::ToggleBottomDock"
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "alt-up": null
+    }
+  },
+  // {
+  //   "context": "Workspace",
+  //   "bindings": {
+  //     "alt-p": "project_panel::ToggleFocus"
+  //   }
+  // },
+  // {
+  //   "context": "Workspace",
+  //   "bindings": {
+  //     "alt-g": "git_panel::ToggleFocus"
+  //   }
+  // },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "alt-e": "editor::ToggleFocus"
+    }
+  },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "ctrl-shift-a": "agent::ToggleFocus"
+    }
+  },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "ctrl-w": null
+    }
   }
 ]

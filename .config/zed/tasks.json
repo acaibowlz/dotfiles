@@ -8,5 +8,19 @@
       "/home/hank/.config/zed/scripts/comment-divider",
       "\"$ZED_SELECTED_TEXT\""
     ]
+  },
+  {
+    "label": "Ruff check --fix",
+    "command": "ruff",
+    "args": ["check", "$ZED_WORKTREE_ROOT", "--fix"],
+    "reveal": "no_focus",
+    "hide": "on_success"
+  },
+  {
+    "label": "Git add $ZED_FILE",
+    "command": "git",
+    "args": ["add", "$ZED_FILE"],
+    "reveal": "no_focus",
+    "hide": "on_success"
   }
 ]
