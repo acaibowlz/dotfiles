@@ -6,6 +6,7 @@
 .config/fontconfig
 .config/git
 .config/gtk-3.0
+.config/gtk-4.0
 .config/niriswitcher
 .config/npm
 .config/paru
