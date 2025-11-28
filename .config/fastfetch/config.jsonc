@@ -9,7 +9,8 @@
     }
   },
   "display": {
-    "separator": " ➜  "
+    "separator": " ➜  ",
+    "size": {"binaryPrefix": "jedec"}
   },
   "modules": [
     "title",
@@ -117,3 +118,4 @@
     "break"
   ]
 }
+
