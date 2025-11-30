@@ -39,11 +39,11 @@ zinit wait lucid light-mode for \
 zinit wait'1' lucid light-mode for \
   OMZ::plugins/extract/extract.plugin.zsh \
   OMZ::plugins/git-commit/git-commit.plugin.zsh \
-  OMZ::plugins/git-extras/git-extras.plugin.zsh \
   OMZ::plugins/sudo/sudo.plugin.zsh
 
 zinit as"completion" wait'1' lucid light-mode blockf for \
   OMZ::plugins/docker/docker.plugin.zsh \
+  OMZ::plugins/git-extras/git-extras.plugin.zsh \
   OMZ::plugins/gh/gh.plugin.zsh
 
 # ---------------------------------------------------------------------------- #
