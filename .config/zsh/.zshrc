@@ -132,161 +132,162 @@ deps() {
   fi
 }
 
+_is_installed() {
+  pacman -Qi "$1" &>/dev/null
+}
+
 pkglist() {
-  _is_installed() {
-    pacman -Qi "$1" &>/dev/null
-  }
   local deps=(fzf paru)
-  local missing_deps=()
+  local missing=()
+
   for dep in "${deps[@]}"; do
-    if ! _is_installed "$dep"; then
-      missing_deps+=("$dep")
-    fi
+    _is_installed "$dep" || missing+=("$dep")
   done
-  if [[ -n $missing_deps ]]; then
-    echo "[ERROR] missing dependencies: ${missing_deps[*]}"
+
+  if [[ -n ${missing[*]} ]]; then
+    echo "[ERROR] missing dependencies: ${missing[*]}"
     return 1
   fi
 
-  _pkglist() {
-    if [[ $# -eq 0 ]]; then
+  case "$1" in
+    "")
       pacman -Qq | fzf --preview 'paru -Qi {}' --layout=reverse
-    elif [[ $1 == '-e' ]]; then
+      ;;
+    -e)
       pacman -Qqe | fzf --preview 'paru -Qi {}' --layout=reverse
-    elif [[ $1 == '-h' ]]; then
+      ;;
+    -h)
       echo "pkglist: Browse installed packages via fzf"
-      echo ""
-      echo "Options:"
-      echo " -e Browse explicitly installed packages only"
-      echo " -h Show this help message and exit"
-      return 0
-    else
+      echo " -e   Explicitly installed only"
+      echo " -h   Show help"
+      ;;
+    *)
       echo "[ERROR] Unknown argument: $1"
       return 1
-    fi
-  }
-
-  _pkglist "$@"
+      ;;
+  esac
 }
 
 pkgcount() {
-  _pkgcount() {
-    if [[ $# -eq 0 ]]; then
-      pacman -Qq | wc -l
-    elif [[ $1 == '-e' ]]; then
+  case "$1" in
+    "")
+      pacman -Qq  | wc -l
+      ;;
+    -e)
       pacman -Qqe | wc -l
-    elif [[ $1 == '-h' ]]; then
-      echo "pkgcount: Count installed packages"
-      echo ""
-      echo "Options:"
-      echo " -e Count explicitly installed packages only"
-      echo " -h Show this help message and exit"
-      return 0
-    else
+      ;;
+    -h)
+      echo "pkgcount: count installed packages"
+      echo " -e   Count explicit only"
+      echo " -h   Show help"
+      ;;
+    *)
       echo "[ERROR] Unknown argument: $1"
       return 1
-    fi
-  }
-
-  _pkgcount "$@"
+      ;;
+  esac
 }
 
 pkgsearch() {
-  _is_installed() {
-    pacman -Qi "$1" &>/dev/null
-  }
   local deps=(fzf paru)
-  local missing_deps=()
+  local missing=()
+
   for dep in "${deps[@]}"; do
-    if ! _is_installed "$dep"; then
-      missing_deps+=("$dep")
-    fi
+    _is_installed "$dep" || missing+=("$dep")
   done
-  if [[ -n $missing_deps ]]; then
-    echo "[ERROR] missing dependencies: ${missing_deps[*]}"
+
+  if [[ -n ${missing[*]} ]]; then
+    echo "[ERROR] missing dependencies: ${missing[*]}"
     return 1
   fi
 
-  _pkgsearch() {
-    if [[ $# -eq 0 ]]; then
-      pacman -Slq | fzf --preview 'pacman -Si {}' --layout=reverse --bind 'enter:execute(sudo pacman -S {})'
-    elif [[ $1 == '-a' ]]; then
-      paru -Slqa | fzf --preview 'paru -Si {}' --layout=reverse --bind 'enter:execute(paru -S {})'
-    elif [[ $1 == '-h' ]]; then
-      echo "pkglist: Browse arch repository via fzf"
-      echo ""
-      echo "Options:"
-      echo " -a Browse arch repository and AUR"
-      echo " -h Show this help message and exit"
-      return 0
-    else
+  case "$1" in
+    "")
+      pacman -Slq | \
+        fzf --preview 'pacman -Si {}' \
+            --layout=reverse \
+            --bind 'enter:execute(sudo pacman -S {})'
+      ;;
+    -a)
+      paru -Slqa | \
+        fzf --preview 'paru -Si {}' \
+            --layout=reverse \
+            --bind 'enter:execute(paru -S {})'
+      ;;
+    -h)
+      echo "pkgsearch: search repos (or AUR with -a) via fzf"
+      echo " -a   Include AUR"
+      echo " -h   Show help"
+      ;;
+    *)
       echo "[ERROR] Unknown argument: $1"
       return 1
-    fi
-  }
-
-  _pkgsearch "$@"
+      ;;
+  esac
 }
 
+
 cleanup() {
-  _is_installed() {
-    pacman -Qi "$1" &>/dev/null
-  }
   local deps=(pacman-contrib fd)
-  local missing_deps=()
+  local missing=()
+
   for dep in "${deps[@]}"; do
-    if ! _is_installed "$dep"; then
-      missing_deps+=("$dep")
-    fi
+    _is_installed "$dep" || missing+=("$dep")
   done
-  if [[ -n $missing_deps ]]; then
-    echo "[ERROR] missing dependencies: ${missing_deps[*]}"
+
+  if [[ -n ${missing[*]} ]]; then
+    echo "[ERROR] missing dependencies: ${missing[*]}"
     return 1
   fi
 
-  _cleanup() {
-    local orphans=$(pacman -Qtdq)
-    if [[ -n $orphans ]]; then
-      printf "[INFO] Removing orphan packages: \n"
-      echo $orphans | xargs printf "   - %s\n"
-      printf "[INFO] Proceed? [Y/n]: "
-      read choice
-      choice=${choice:-Y}
-      if [[ $choice =~ ^[Yy]$ ]]; then
-        echo "$orphans" | xargs sudo pacman -Rns --noconfirm
-        if [[ $? -eq 0 ]]; then
-          printf "[INFO] Removal completed\n"
-        fi
-      fi
-    else
-      printf "[INFO] No orphan packages\n"
-    fi
+  # Orphan packages
+  local orphans=$(pacman -Qtdq)
+  if [[ -n $orphans ]]; then
+    printf "[INFO] Removing orphan packages:\n"
+    printf "   - %s\n" $orphans
+    printf "[INFO] Proceed? [Y/n]: "
+    read choice
+    choice=${choice:-Y}
 
-    local pacman_cache=$(echo $(paccache -d) | grep -oP 'disk space saved: \K[0-9.]+ [A-Za-z]+')
-    if [[ -n $pacman_cache ]]; then
-      printf "[INFO] Pacman cache found. Save $pacman_cache? [Y/n]: "
-      read choice
-      choice=${choice:-Y}
-      if [[ $choice =~ ^[Yy]$ ]]; then
-        sudo paccache -rq
-        if [[ $? -eq 0 ]]; then
-          printf "[INFO] Pacman cache removed\n"
-        fi
-      fi
-    else
-      printf "[INFO] No pacman cache\n"
+    if [[ $choice =~ ^[Yy]$ ]]; then
+      echo "$orphans" | xargs sudo pacman -Rns --noconfirm
+      [[ $? -eq 0 ]] && printf "[INFO] Orphan removal completed\n"
     fi
+  else
+    printf "[INFO] No orphan packages\n"
+  fi
 
+  # Pacman cache
+  local saved=$(paccache -d | grep -oP 'disk space saved: \K[0-9.]+ [A-Za-z]+')
+
+  if [[ -n $saved ]]; then
+    printf "[INFO] Pacman cache found. Save %s? [Y/n] " "$saved"
+    read choice
+    choice=${choice:-Y}
+
+    [[ $choice =~ ^[Yy]$ ]] && sudo paccache -rq && printf "[INFO] Pacman cache removed\n"
+  else
+    printf "[INFO] No pacman cache\n"
+  fi
+
+  # Paru cache
     local paru_cache="$HOME/.cache/paru"
-    local lookup_result=$(fd --absolute-path --no-ignore '\.tar.gz$|\.deb$' "$paru_cache" | grep -v 'pkg.tar.zst')
-    if [[ -n $lookup_result ]]; then
-      printf "[INFO] Removing paru cache: \n"
-      echo $lookup_result | xargs printf "   - %s\n"
+    local -a lookup=()
+
+    # Read each path as a separate array element (preserves spaces, newlines)
+    while IFS= read -r line; do
+      [[ -n $line ]] && lookup+=("$line")
+    done < <(fd --absolute-path --no-ignore '\.tar\.gz$|\.deb$' "$paru_cache" | grep -v 'pkg.tar.zst')
+
+    if (( ${#lookup[@]} )); then
+      printf "[INFO] Removing paru cache:\n"
+      printf "   - %s\n" "${lookup[@]}"
       printf "[INFO] Proceed? [Y/n]: "
       read choice
       choice=${choice:-Y}
+
       if [[ $choice =~ ^[Yy]$ ]]; then
-        rm $(fd --absolute-path --no-ignore '\.tar\.gz$|\.deb$' "$paru_cache" | grep -v 'pkg.tar.zst')
+        rm -- "${lookup[@]}"
         if [[ $? -eq 0 ]]; then
           printf "[INFO] Removal completed\n"
         fi
@@ -296,9 +297,6 @@ cleanup() {
     fi
 
     printf "[INFO] OK\n"
-  }
-
-  _cleanup
 }
 
 # ---------------------------------------------------------------------------- #
