@@ -9,6 +9,7 @@
 # ---------------------------------------------------------------------------- #
 
 typeset -U PATH path
+: "${XDG_DATA_HOME:=$HOME/.local/share}"
 path=(
   "$HOME/Code/scripts"
   "$HOME/.local/bin"
@@ -24,81 +25,46 @@ export PATH
 # ---------------------------------------------------------------------------- #
 
 export ZINIT_HOME="$XDG_DATA_HOME/zinit/zinit.git"
-[ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
-[ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+[[ ! -d "$ZINIT_HOME" ]] && mkdir -p "${ZINIT_HOME%/*}"
+[[ ! -d "$ZINIT_HOME/.git" ]] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 source "$ZINIT_HOME/zinit.zsh"
 
-# Use turbo and ice modifiers to optimize plugin loading
-zinit wait"0" lucid light-mode for \
-  atload"_zsh_autosuggest_start" \
-  zsh-users/zsh-autosuggestions
+zinit light-mode for \
+  zsh-users/zsh-autosuggestions \
+  zdharma-continuum/fast-syntax-highlighting \
 
-zinit wait"0" lucid light-mode for \
-  zsh-users/zsh-completions \
+zinit wait lucid light-mode for \
   Aloxaf/fzf-tab
 
-# Load syntax highlighting last with optimized initialization
-zinit wait"0" lucid light-mode for \
-  atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
-  zdharma-continuum/fast-syntax-highlighting
+# Oh-my-zsh functions
+zinit wait'1' lucid light-mode for \
+  OMZ::plugins/extract/extract.plugin.zsh \
+  OMZ::plugins/git-commit/git-commit.plugin.zsh \
+  OMZ::plugins/git-extras/git-extras.plugin.zsh \
+  OMZ::plugins/sudo/sudo.plugin.zsh
 
-# Add in snippets (turbo mode)
-zinit wait"1" lucid for \
-  OMZP::sudo
+zinit as"completion" wait'1' lucid light-mode blockf for \
+  OMZ::plugins/docker/docker.plugin.zsh \
+  OMZ::plugins/gh/gh.plugin.zsh
 
 # ---------------------------------------------------------------------------- #
 #                                      ZSH                                     #
 # ---------------------------------------------------------------------------- #
 
 setopt append_history inc_append_history share_history
+setopt hist_ignore_dups hist_ignore_space
 HISTSIZE=1000000
 SAVEHIST=1000000
-HISTCONTROL=ignoreboth
-[ -d "$XDG_DATA_HOME/zsh" ] || mkdir -p "$XDG_DATA_HOME/zsh"
-HISTFILE="$XDG_DATA_HOME/zsh/history"
+HISTFILE="$HOME/.zsh_history"
 
-# Create cache directory if needed
-[ -d "$XDG_CACHE_HOME/zsh" ] || mkdir -p "$XDG_CACHE_HOME/zsh"
+autoload -Uz compinit
+compinit -C
 
-# Define compdump file path once
-ZCOMPDUMP="$XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION"
-
-# Defer expensive completion initialization
-_defer_compinit() {
-  # Load completion system
-  autoload -Uz compinit
-
-  # Only rebuild once per day - using seconds since epoch is more reliable
-  local comp_mtime=$(stat -c %Y "$ZCOMPDUMP" 2>/dev/null || echo 0)
-  local current_time=$(date +%s)
-
-  if (( current_time - comp_mtime > 86400 )); then
-    # Full initialization if older than 24 hours
-    compinit -d "$ZCOMPDUMP"
-  else
-    # Fast initialization (skip security check)
-    compinit -C -d "$ZCOMPDUMP"
-  fi
-
-  # Cache completions for better performance
-  zstyle ':completion:*' use-cache on
-  zstyle ':completion:*' cache-path "$XDG_CACHE_HOME/zsh/zcompcache"
-
-  # Remove from precommand functions after first run
-  precmd_functions=(${precmd_functions:#_defer_compinit})
-}
-
-# Add to precmd to run after first prompt
-precmd_functions+=(_defer_compinit)
-
-# Completion styling (keep your existing settings)
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
-zstyle ':completion:*' menu no
 
-# Key bindings (keep your existing settings)
-bindkey "^[[H" beginning-of-line
-bindkey "^[[F" end-of-line
-bindkey "^[[3~" delete-char
+bindkey "^[[H" beginning-of-line # home key
+bindkey "^[[F" end-of-line       # end key
+bindkey "^[[3~" delete-char      # delete key
 
 # ---------------------------------------------------------------------------- #
 #                                      FZF                                     #
@@ -128,9 +94,6 @@ alias gs="git status"
 alias gu="git uncommit"
 alias gsw="git switch"
 alias gcl="git clone"
-if command -v git-extras >/dev/null 2>&1; then
-  source /usr/share/doc/git-extras/git-extras-completion.zsh
-fi
 
 # ---------------------------------------------------------------------------- #
 #                                   SHORTCUTS                                  #
@@ -147,95 +110,7 @@ alias wifi="nmtui connect"
 alias clock="peaclock"
 alias reload="source $XDG_CONFIG_HOME/zsh/.zshrc"
 alias weather="curl 'wttr.in/{Hsinchu,Taipei}?format=%l:+%c+%C+%t+%28%f%29\n'"
-
-log-out() {
-  local desktop="${XDG_CURRENT_DESKTOP:-}"
-  case "$desktop" in
-    GNOME)
-      echo "Session found: GNOME. Logging out..."
-      sleep 2
-      gnome-session-quit --no-prompt
-      ;;
-    niri)
-      echo "Session found: niri. Logging out..."
-      sleep 2
-      pkill niri
-      ;;
-    *)
-      echo "Unknown session: $desktop."
-      ;;
-  esac
-}
-
-# Defer loading heavy functions to improve startup time
-# The function will be created on first call
-change-wallpaper() {
-  _is_installed() {
-    pacman -Qi "$1" &>/dev/null
-  }
-  local deps=(imagemagick gum fd)
-  local missing_deps=()
-  for dep in "${deps[@]}"; do
-    if ! _is_installed "$dep"; then
-      missing_deps+=("$dep")
-    fi
-  done
-  if [[ -n $missing_deps ]]; then
-    echo "[ERROR] missing dependencies: ${missing_deps[*]}"
-    return 1
-  fi
-
-  _change-wallpaper() {
-    if [[ $XDG_CURRENT_DESKTOP == "niri" ]]; then
-      bash "$HOME/Code/niri-setup/scripts/change-wallpaper.sh"
-
-    elif [[ $XDG_CURRENT_DESKTOP == "GNOME" ]]; then
-      local wallpaper_dir="$HOME/Pictures/Wallpapers"
-      export GUM_CHOOSE_HEADER_FOREGROUND="#d8dadd"
-      export GUM_CHOOSE_SELECTED_FOREGROUND="#758A9B"
-      export GUM_CHOOSE_CURSOR_FOREGROUND="#758A9B"
-
-      if [ ! -d "$wallpaper_dir" ]; then
-        mkdir -p "$wallpaper_dir"
-      fi
-
-      local images=$(fd . --base-directory "$wallpaper_dir" -x file {} | grep -oP '^.+: \w+ image' | cut -d ':' -f 1 | sort)
-      if [ -z "$images" ]; then
-        echo "[ERROR] no image file found. place your wallpapers in $wallpaper_dir."
-        return 1
-      fi
-
-      local image=$(echo "$images" | gum choose --header 'choose your wallpaper: ')
-      if [[ -z "$image" ]]; then
-        echo "[INFO] no image was selected"
-        return 1
-      fi
-      local image_name=$(basename -- "$image")
-      local extension="${image_name##*.}"
-
-      local mode=$(echo "wallpaper\ncentered\nscaled\nstretched\nzoom\nspanned" | gum choose --header "Select wallpaper mode: ")
-      if [[ -z "$mode" ]]; then
-        echo "[INFO] no mode was selected"
-        return 1
-      fi
-
-      gsettings set org.gnome.desktop.background picture-uri "file://$wallpaper_dir/$image"
-      gsettings set org.gnome.desktop.background picture-uri-dark "file://$wallpaper_dir/$image"
-      gsettings set org.gnome.desktop.background picture-options "$mode"
-      gsettings set org.gnome.desktop.background primary-color "#000000"
-
-      echo "Selected: $(basename "$image")"
-      echo "Mode: $mode"
-      echo "OK!"
-
-    else
-      echo "[ERROR] Unsupport session: $XDG_CURRENT_DESKTOP."
-      return 1
-    fi
-  }
-
-  _change-wallpaper
-}
+alias log-out="pkill niri"
 
 # ---------------------------------------------------------------------------- #
 #                                    PACMAN                                    #
