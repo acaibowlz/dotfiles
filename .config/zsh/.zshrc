@@ -31,7 +31,7 @@ source "$ZINIT_HOME/zinit.zsh"
 
 zinit light-mode for \
   zsh-users/zsh-autosuggestions \
-  zdharma-continuum/fast-syntax-highlighting \
+  zdharma-continuum/fast-syntax-highlighting
 
 zinit wait lucid light-mode for \
   Aloxaf/fzf-tab
@@ -171,7 +171,7 @@ pkglist() {
 pkgcount() {
   case "$1" in
     "")
-      pacman -Qq  | wc -l
+      pacman -Qq | wc -l
       ;;
     -e)
       pacman -Qqe | wc -l
@@ -203,16 +203,16 @@ pkgsearch() {
 
   case "$1" in
     "")
-      pacman -Slq | \
+      pacman -Slq |
         fzf --preview 'pacman -Si {}' \
-            --layout=reverse \
-            --bind 'enter:execute(sudo pacman -S {})'
+          --layout=reverse \
+          --bind 'enter:execute(sudo pacman -S {})'
       ;;
     -a)
-      paru -Slqa | \
+      paru -Slqa |
         fzf --preview 'paru -Si {}' \
-            --layout=reverse \
-            --bind 'enter:execute(paru -S {})'
+          --layout=reverse \
+          --bind 'enter:execute(paru -S {})'
       ;;
     -h)
       echo "pkgsearch: search repos (or AUR with -a) via fzf"
@@ -225,7 +225,6 @@ pkgsearch() {
       ;;
   esac
 }
-
 
 cleanup() {
   local deps=(pacman-contrib fd)
@@ -271,32 +270,32 @@ cleanup() {
   fi
 
   # Paru cache
-    local paru_cache="$HOME/.cache/paru"
-    local -a lookup=()
+  local paru_cache="$HOME/.cache/paru"
+  local -a lookup=()
 
-    # Read each path as a separate array element (preserves spaces, newlines)
-    while IFS= read -r line; do
-      [[ -n $line ]] && lookup+=("$line")
-    done < <(fd --absolute-path --no-ignore '\.tar\.gz$|\.deb$' "$paru_cache" | grep -v 'pkg.tar.zst')
+  # Read each path as a separate array element (preserves spaces, newlines)
+  while IFS= read -r line; do
+    [[ -n $line ]] && lookup+=("$line")
+  done < <(fd --absolute-path --no-ignore '\.tar\.gz$|\.deb$' "$paru_cache" | grep -v 'pkg.tar.zst')
 
-    if (( ${#lookup[@]} )); then
-      printf "[INFO] Removing paru cache:\n"
-      printf "   - %s\n" "${lookup[@]}"
-      printf "[INFO] Proceed? [Y/n]: "
-      read choice
-      choice=${choice:-Y}
+  if ((${#lookup[@]})); then
+    printf "[INFO] Removing paru cache:\n"
+    printf "   - %s\n" "${lookup[@]}"
+    printf "[INFO] Proceed? [Y/n]: "
+    read choice
+    choice=${choice:-Y}
 
-      if [[ $choice =~ ^[Yy]$ ]]; then
-        rm -- "${lookup[@]}"
-        if [[ $? -eq 0 ]]; then
-          printf "[INFO] Removal completed\n"
-        fi
+    if [[ $choice =~ ^[Yy]$ ]]; then
+      rm -- "${lookup[@]}"
+      if [[ $? -eq 0 ]]; then
+        printf "[INFO] Removal completed\n"
       fi
-    else
-      printf "[INFO] No paru cache\n"
     fi
+  else
+    printf "[INFO] No paru cache\n"
+  fi
 
-    printf "[INFO] OK\n"
+  printf "[INFO] OK\n"
 }
 
 # ---------------------------------------------------------------------------- #
