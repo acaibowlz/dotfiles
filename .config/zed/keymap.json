@@ -54,24 +54,6 @@
       "alt-up": null
     }
   },
-  // {
-  //   "context": "Workspace",
-  //   "bindings": {
-  //     "alt-p": "project_panel::ToggleFocus"
-  //   }
-  // },
-  // {
-  //   "context": "Workspace",
-  //   "bindings": {
-  //     "alt-g": "git_panel::ToggleFocus"
-  //   }
-  // },
-  {
-    "context": "Workspace",
-    "bindings": {
-      "alt-e": "editor::ToggleFocus"
-    }
-  },
   {
     "context": "Workspace",
     "bindings": {
@@ -79,9 +61,15 @@
     }
   },
   {
-    "context": "Workspace",
+    "context": "ProjectPanel",
     "bindings": {
-      "ctrl-w": null
+      "ctrl-w": "editor::ToggleFocus"
+    }
+  },
+  {
+    "context": "ProjectPanel",
+    "bindings": {
+      "enter": "editor::OpenSelectedFilename"
     }
   }
 ]
