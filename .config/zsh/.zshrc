@@ -36,7 +36,6 @@ zinit light-mode for \
 zinit wait lucid light-mode for \
   Aloxaf/fzf-tab
 
-# Oh-my-zsh functions
 zinit wait'1' lucid light-mode for \
   OMZ::plugins/extract/extract.plugin.zsh \
   OMZ::plugins/git-commit/git-commit.plugin.zsh \
@@ -55,11 +54,14 @@ setopt append_history inc_append_history share_history
 setopt hist_ignore_dups hist_ignore_space
 HISTSIZE=1000000
 SAVEHIST=1000000
-HISTFILE="$HOME/.zsh_history"
+: "${XDG_STATE_HOME:=$HOME/.local/state}"
+HISTFILE="$XDG_STATE_HOME/zsh/history"
+COMPDUMP="$XDG_CACHE_HOME/zsh/zcompdump"
 
 autoload -Uz compinit
-compinit -C
+compinit -C $COMPDUMP
 
+# Case insensitive completion
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 
 bindkey "^[[H" beginning-of-line # home key
