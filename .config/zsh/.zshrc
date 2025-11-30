@@ -56,10 +56,10 @@ HISTSIZE=1000000
 SAVEHIST=1000000
 : "${XDG_STATE_HOME:=$HOME/.local/state}"
 HISTFILE="$XDG_STATE_HOME/zsh/history"
-COMPDUMP="$XDG_CACHE_HOME/zsh/zcompdump"
+ZSH_COMPDUMP="$XDG_CACHE_HOME/zsh/zcompdump"
 
 autoload -Uz compinit
-compinit -C $COMPDUMP
+compinit -C $ZSH_COMPDUMP
 
 # Case insensitive completion
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'

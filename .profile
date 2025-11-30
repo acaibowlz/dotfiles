@@ -5,22 +5,28 @@ export TERM="alacritty"
 export TERMINAL="alacritty"
 export BROWSER="firefox"
 
-# follow XDG base dir specification
+# ~/.config
 export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_CACHE_HOME="$HOME/.cache"
-export XDG_DATA_HOME="$HOME/.local/share"
-export XDG_STATE_HOME="$HOME/.local/state"
-
-# program settings
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
+export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
+export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"
+
+# ~/.cache
+export XDG_CACHE_HOME="$HOME/.cache"
+export ZSH_COMPDUMP="$XDG_CACHE_HOME/zsh/zcompdump"
+export GOMODCACHE="$XDG_CACHE_HOME/go/mod"
+
+# ~/.local/share
+export XDG_DATA_HOME="$HOME/.local/share"
 export GOPATH="$XDG_DATA_HOME/go"
 export GOBIN="$GOPATH/bin"
-export GOMODCACHE="$XDG_CACHE_HOME/go/mod"
-export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
 export GNUPGHOME="$XDG_DATA_HOME/gnupg"
-export PYTHON_HISTORY="$XDG_DATA_HOME/python/history"
-export PYTHONDONTWRITEBYTECODE=1
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
-export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc":"$XDG_CONFIG_HOME/gtk-2.0/gtkrc.mine"
-export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
 
+# ~/.local/state
+export XDG_STATE_HOME="$HOME/.local/state"
+export HISTFILE="$XDG_STATE_HOME/zsh/history"
+export PYTHON_HISTORY="$XDG_STATE_HOME/python/history"
+
+# other settings
+export PYTHONDONTWRITEBYTECODE=1
