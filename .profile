@@ -14,12 +14,10 @@ export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"
 # ~/.cache
 export XDG_CACHE_HOME="$HOME/.cache"
 export ZSH_COMPDUMP="$XDG_CACHE_HOME/zsh/zcompdump"
-export GOMODCACHE="$XDG_CACHE_HOME/go/mod"
 
 # ~/.local/share
 export XDG_DATA_HOME="$HOME/.local/share"
 export GOPATH="$XDG_DATA_HOME/go"
-export GOBIN="$GOPATH/bin"
 export GNUPGHOME="$XDG_DATA_HOME/gnupg"
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
 
