@@ -88,14 +88,17 @@ zstyle ':fzf-tab:*' use-fzf-default-opts yes
 alias ga="git add"
 alias gb="git branch"
 alias gc="git commit -m"
+alias gcl="git clone"
 alias gd="git diff"
 alias gf="git fetch -p"
 alias gm="git merge"
 alias gp="git push"
-alias gs="git status"
-alias gu="git uncommit"
+alias gpl="git pull"
+alias gr="git restore"
+alias gs="git stash"
+alias gsp="git stash pop"
 alias gsw="git switch"
-alias gcl="git clone"
+alias gu="git undo"
 
 # ---------------------------------------------------------------------------- #
 #                                   SHORTCUTS                                  #
