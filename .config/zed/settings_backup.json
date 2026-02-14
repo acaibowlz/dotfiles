@@ -54,6 +54,9 @@
 
   // AI features
   "disable_ai": false,
+  "features": {
+    "edit_prediction_provider": "zed",
+  },
   "show_edit_predictions": false,
   "agent": {
     "inline_assistant_model": {
@@ -65,9 +68,6 @@
       "provider": "copilot_chat",
       "model": "gpt-4o",
     },
-  },
-  "edit_predictions": {
-    "provider": "copilot",
   },
 
   // Language-specific settings
@@ -164,7 +164,7 @@
 
   // profiles
   "profiles": {
-    "No Formation On Save": {
+    "disable format on save": {
       "format_on_save": "off",
     },
   },
