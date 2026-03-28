@@ -123,10 +123,6 @@ alias log-out="pkill niri"
 #                                    PACMAN                                    #
 # ---------------------------------------------------------------------------- #
 
-alias inst="paru -S"
-alias uninst="paru -Rns"
-alias up="paru -Syu"
-alias speed="speedtest-cli --bytes"
 alias mirrors="rate-mirrors --allow-root --protocol https arch | grep -v '^#' | sudo tee /etc/pacman.d/mirrorlist"
 
 deps() {
@@ -233,20 +229,7 @@ pkgsearch() {
   esac
 }
 
-cleanup() {
-  local deps=(pacman-contrib fd)
-  local missing=()
-
-  for dep in "${deps[@]}"; do
-    _is_installed "$dep" || missing+=("$dep")
-  done
-
-  if [[ -n ${missing[*]} ]]; then
-    echo "[ERROR] missing dependencies: ${missing[*]}"
-    return 1
-  fi
-
-  # Orphan packages
+_remove_orphan_pkgs() (
   local orphans=$(pacman -Qtdq)
   if [[ -n $orphans ]]; then
     printf "[INFO] Removing orphan packages:\n"
@@ -262,8 +245,9 @@ cleanup() {
   else
     printf "[INFO] No orphan packages\n"
   fi
+)
 
-  # Pacman cache
+_remove_pacman_cache() (
   local saved=$(paccache -d | grep -oP 'disk space saved: \K[0-9.]+ [A-Za-z]+')
 
   if [[ -n $saved ]]; then
@@ -275,25 +259,30 @@ cleanup() {
   else
     printf "[INFO] No pacman cache\n"
   fi
+)
 
-  # Paru cache
-  local paru_cache="$HOME/.cache/paru"
-  local -a lookup=()
+_remove_paru_cache() {
+  local paru_cache="$HOME/.cache/paru/clone"
+  local repos=($(fd --max-depth 1 --min-depth 1 --type d . "$paru_cache"))
+  local files=()
 
-  # Read each path as a separate array element (preserves spaces, newlines)
-  while IFS= read -r line; do
-    [[ -n $line ]] && lookup+=("$line")
-  done < <(fd --absolute-path --no-ignore '\.tar\.gz$|\.deb$' "$paru_cache" | grep -v 'pkg.tar.zst')
+  for repo in $repos; do
+    while IFS= read -r line; do
+      files+=("${line#Would remove }")
+    done < <(git -C $repo clean -nx)
+  done
 
-  if ((${#lookup[@]})); then
+  if ((${#files[@]})); then
     printf "[INFO] Removing paru cache:\n"
-    printf "   - %s\n" "${lookup[@]}"
+    printf "   - %s\n" "${files[@]}"
     printf "[INFO] Proceed? [Y/n]: "
     read choice
     choice=${choice:-Y}
 
     if [[ $choice =~ ^[Yy]$ ]]; then
-      rm -- "${lookup[@]}"
+      for repo in $repos; do
+        git -C $repo clean -qxf
+      done
       if [[ $? -eq 0 ]]; then
         printf "[INFO] Removal completed\n"
       fi
@@ -301,6 +290,24 @@ cleanup() {
   else
     printf "[INFO] No paru cache\n"
   fi
+}
+
+cleanup() {
+  local deps=(pacman-contrib fd)
+  local missing=()
+
+  for dep in "${deps[@]}"; do
+    _is_installed "$dep" || missing+=("$dep")
+  done
+
+  if [[ -n ${missing[*]} ]]; then
+    echo "[ERROR] missing dependencies: ${missing[*]}"
+    return 1
+  fi
+
+  _remove_orphan_pkgs
+  _remove_pacman_cache
+  _remove_paru_cache
 
   printf "[INFO] OK\n"
 }
