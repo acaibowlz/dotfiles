@@ -14,8 +14,6 @@
 [push]
 	autoSetupRemote = true
 	followTags = true
-[core]
-	hooksPath = .githooks
 [init]
 	defaultBranch = main
 [pager]
